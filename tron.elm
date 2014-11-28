@@ -7,7 +7,7 @@ type Pos = (Float, Float)
 type Tail = [Pos]
 
 data GameState = Ended | Playing BikeState BikeState
-data BikeState = BikeState Pos Orientation Int Tail
+data BikeState = BikeState Pos Orientation Float Tail
 
 -- default values
 width = 1024
@@ -15,6 +15,20 @@ height = 768
 
 playerW = 64
 playerH = 16
+
+--initialGameState : GameState
+initialGameState =
+    let bike1 = BikeState (-462.0, 0.0) E 50.0 []
+        bike2 = BikeState (462.0, 0.0) W 50.0 []
+    in Playing bike1 bike2
+
+showGameState : GameState -> Element
+showGameState gs = 
+    let forms = [filled black (rect width height)] ++ elements
+        elements = case gs of
+                     Ended -> toForm (centered (Text.color white (toText "Press space to start playing")))]
+                     (Playing (BikeState pos o _ tail) (BikeState pos2 o2 _ tail2)) -> (Text.color white (toText "implement me")))]
+    in collage width height forms
 
 data Orientation = N | E | S | W
 -- example use: showPlayer' Color.lightBlue (10, 10) N
