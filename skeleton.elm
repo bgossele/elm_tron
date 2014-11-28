@@ -1,4 +1,13 @@
 import Color
+import Text
+import Keyboard
+import Debug
+
+type Pos = (Float, Float)
+type Tail = [Pos]
+
+data GameState = Ended | Playing BikeState BikeState
+data BikeState = BikeState Pos Orientation Int Tail
 
 -- default values
 width = 1024
