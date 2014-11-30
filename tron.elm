@@ -2,6 +2,7 @@ import Color
 import Text
 import Keyboard
 import Debug
+import Basics
 
 type Pos = (Float, Float)
 type Tail = [Pos]
@@ -33,8 +34,10 @@ timedInput = lift2 Input keybInput heartbeat
 
 initialGameState : GameState
 initialGameState =
-    let bike1 = BikeState (-(width/2)+50, 0.0) E 0.75 []
-        bike2 = BikeState (width/2-50, 0.0) W 0.75 []
+    let pos1 = (-width/2+50, 0.0)
+        pos2 = (width/2-50, 0.0)
+        bike1 = BikeState pos1 E 0.75 [pointInDirection pos1 E -tailOffset]
+        bike2 = BikeState pos2 W 0.75 [pointInDirection pos2 W -tailOffset]
     in Playing bike1 bike2 True
 
 showGameState : GameState -> Element
@@ -42,14 +45,11 @@ showGameState gs =
     let forms = [filled black (rect width height)] ++ elements
         elements = case gs of
                      (Ended _)-> [toForm (centered (Text.color white (toText "Press space to start playing")))]
-                     (Playing (BikeState pos o _ tail) (BikeState pos2 o2 _ tail2) _) -> 
-                         let tailstart = pointInDirection pos o -tailOffset
-                             tailstart2 = pointInDirection pos2 o2 -tailOffset
-                         in
-                             [showPlayer' Color.red pos o,
-                              showTail Color.red (tailstart :: (generateTail tailstart tail tailL o)),
-                              showPlayer' Color.blue pos2 o2,
-                              showTail Color.blue (tailstart2 :: (generateTail tailstart2 tail2 tailL o2))]
+                     (Playing (BikeState pos1 o1 _ tail1) (BikeState pos2 o2 _ tail2) _) ->
+                         [showPlayer' Color.red pos1 o1,
+                          showTail Color.red tail1,
+                          showPlayer' Color.blue pos2 o2,
+                          showTail Color.blue tail2]
     in collage width height forms
 
 step : Input -> GameState -> GameState
@@ -61,8 +61,12 @@ step (Input (KeybInput arrows wasd space) _) gs =
                 new_o2 = getNewOrientation wasd o2
                 new_pos1 = pointInDirection pos1 o1 v1
                 new_pos2 = pointInDirection pos2 o2 v2
+                tailstart1 = pointInDirection new_pos1 new_o1 -tailOffset
+                tailstart2 = pointInDirection new_pos2 new_o2 -tailOffset
+                new_tail1 = tailstart1 :: (generateTail tailstart1 tail1 tailL)
+                new_tail2 = tailstart2 :: (generateTail tailstart2 tail2 tailL)
             in 
-                if space /= b && space then initialGameState else Playing (BikeState new_pos1 new_o1 v1 tail1) (BikeState new_pos2 new_o2 v2 tail2) space
+                if space /= b && space then initialGameState else Playing (BikeState new_pos1 new_o1 v1 new_tail1) (BikeState new_pos2 new_o2 v2 new_tail2) space
 
 getNewOrientation : (Int,Int) -> Orientation -> Orientation
 getNewOrientation (x,y) o = if x == 1 then E else (if x == -1 then W else (if y == 1 then N else (if y == -1 then S else o)))
@@ -75,11 +79,24 @@ pointInDirection (x,y) o distance =
         S -> (x, y - distance)
         W -> (x - distance, y)
 
-generateTail : Pos -> [Pos] -> Float -> Orientation -> [Pos]
-generateTail (x,y) corners length or =
-    case corners of
-        [] -> [(x,y), pointInDirection (x,y) or -length]
-        c::cs -> c::cs 
+generateTail : Pos -> [Pos] -> Float -> [Pos]
+generateTail (x,y) corners length =
+    if length == 0 then [] else
+        case corners of
+            [] -> []
+            c::cs ->
+                let d = dist (x,y) c
+                in
+                    if d <= length then c :: (generateTail c cs (length - d)) else [findPoint (x,y) c length]
+
+sq x = x * x
+sign x = if x > 0 then 1 else (if x == 0 then 0 else -1)
+
+findPoint : Pos -> Pos -> Float -> Pos
+findPoint (x1, y1) (x2, y2) dist = (x1 + (sign (x2-x1))*dist, y1 + (sign (y2-y1)*dist))
+
+dist : Pos -> Pos -> Float
+dist (x1,y1) (x2,y2) = sqrt(sq (x1-x2) + sq (y1-y2))
 
 gameState = lift (Debug.watch "Game state") (foldp step (Ended False) timedInput)
 
