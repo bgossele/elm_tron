@@ -46,39 +46,8 @@ showGameState gs =
                           showPlayer' Color.blue pos2 o2]
     in collage width height forms
 
-{--step : KeybInput -> GameState -> GameState
-step (KeybInput arrows wasd space) gs =
-    case gs of
-        (Ended b)-> if space /= b && space then initialGameState else Ended space
-        (Playing (BikeState pos1 o1 v1 tail1) (BikeState pos2 o2 v2 tail2) b)-> 
-            let new_o1 = getNewOrientation arrows o1
-                new_o2 = getNewOrientation wasd o2
-            in 
-                if space then Ended else Playing (BikeState pos1 new_o1 v1 tail1) (BikeState pos2 new_o2 v2 tail2)
-
-step2 : Time -> GameState -> GameState
-step2 _ gs = 
-    case gs of
-        Ended -> Ended
-        Playing (BikeState pos1 o1 v1 tail1) (BikeState pos2 o2 v2 tail2) ->
-            let new_pos1 = updatePosition pos1 o1 v1
-                new_pos2 = updatePosition pos2 o2 v2
-            in
-                Playing (BikeState new_pos1 o1 v1 tail1) (BikeState new_pos2 o2 v2 tail2)
-
-step2' : Time -> GameState -> GameState
-step2' _ gs = 
-    case gs of
-        Ended -> Ended
-        Playing (BikeState pos1 o1 v1 tail1) (BikeState pos2 o2 v2 tail2) ->
-            let new_pos1 = updatePosition pos1 o1 v1
-                new_pos2 = updatePosition pos2 o2 v2
-            in
-                Playing (BikeState new_pos1 o1 v1 tail1) (BikeState new_pos2 o2 v2 tail2)
---}
-
-step3 : Input -> GameState -> GameState
-step3 (Input (KeybInput arrows wasd space) _) gs =
+step : Input -> GameState -> GameState
+step (Input (KeybInput arrows wasd space) _) gs =
     case gs of
         Ended b -> if space /= b && space then initialGameState else Ended space
         Playing (BikeState pos1 o1 v1 tail1) (BikeState pos2 o2 v2 tail2) b -> 
@@ -100,15 +69,9 @@ updatePosition (x,y) o v =
         S -> (x, y - v)
         W -> (x - v, y)
 
-{--gameState : Signal GameState
-gameState = lift (Debug.watch "Game state") (foldp step Ended keybInput)
+gameState = lift (Debug.watch "Timed game state") (foldp step (Ended False) timedInput)
 
-gameState2 : Signal GameState
-gameState2 = foldp step2 initialGameState heartbeat
---}
-gameState3 = lift (Debug.watch "Timed game state") (foldp step3 (Ended False) timedInput)
-
-main = lift showGameState gameState3
+main = lift showGameState gameState
 
 
 data Orientation = N | E | S | W
