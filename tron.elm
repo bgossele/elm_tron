@@ -72,8 +72,8 @@ step (Input (KeybInput arrows wasd space) _) gs =
                 outOfBounds2 = outOfBounds (corners new_pos2 new_o2)
                 collision2 = (collideWithTail new_pos2 new_o2 new_tail1) || (collideWithTail new_pos2 new_o2 new_tail2)
             in
-                if outOfBounds1 || collision1 then Ended "Player 2 wins!" space else
-                    if outOfBounds2 || collision2 then Ended "Player 1 wins!" space else
+                if outOfBounds1 || collision1 then Ended "Player 2 wins! \n Press space to restart" space else
+                    if outOfBounds2 || collision2 then Ended "Player 1 wins! \n Press space to restart" space else
                         if space /= b && space then initialGameState else
                             Playing (BikeState new_pos1 new_o1 v1 new_tail1) (BikeState new_pos2 new_o2 v2 new_tail2) space
 
