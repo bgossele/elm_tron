@@ -13,12 +13,12 @@ data GameState = Ended String Bool | Playing BikeState BikeState Bool
 data BikeState = BikeState Pos Orientation Float Tail
 
 -- default values
-width = 800
-height = 600
+width = 720
+height = 540
 
 playerW = 64
 playerH = 16
-tailL = toFloat 256
+tailL = toFloat 200
 tailOffset = toFloat 4
 
 data KeybInput = KeybInput (Int, Int) (Int, Int) Bool
