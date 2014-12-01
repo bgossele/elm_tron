@@ -22,7 +22,7 @@ tailOffset = toFloat 4
 data KeybInput = KeybInput (Int, Int) (Int, Int) Bool
 data Input = Input KeybInput Time
 
-heartbeat = lift (Debug.watch "heartbeat") (fps 120)
+heartbeat = lift (Debug.watch "heartbeat") (fps 100.0)
 
 keybInput : Signal KeybInput
 keybInput =
@@ -59,8 +59,8 @@ step (Input (KeybInput arrows wasd space) _) gs =
         Playing (BikeState pos1 o1 v1 tail1) (BikeState pos2 o2 v2 tail2) b -> 
             let new_o1 = getNewOrientation arrows o1
                 new_o2 = getNewOrientation wasd o2
-                new_pos1 = pointInDirection pos1 o1 v1
-                new_pos2 = pointInDirection pos2 o2 v2
+                new_pos1 = pointInDirection pos1 new_o1 (if o1 == new_o1 then v1 else tailOffset)
+                new_pos2 = pointInDirection pos2 new_o2 (if o2 == new_o2 then v2 else tailOffset)
                 tailstart1 = pointInDirection new_pos1 new_o1 -tailOffset
                 tailstart2 = pointInDirection new_pos2 new_o2 -tailOffset
                 new_tail1 = tailstart1 :: (generateTail tailstart1 tail1 tailL)
