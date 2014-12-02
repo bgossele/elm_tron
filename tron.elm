@@ -46,12 +46,12 @@ showGameState : GameState -> Element
 showGameState gs = 
     let forms = [filled black (rect width height)] ++ elements
         elements = case gs of
-                     (Ended m _)-> [toForm (centered (Text.color (rgb 0 204 0) (toText (m ++ "\n\nPress space to start"))))]
+                     (Ended m _)-> [toForm (centered (Text.color (rgb 0 204 0) (toText (m ++ "\n\n\n========> Press space to start <========"))))]
                      (Playing (BikeState pos1 o1 _ tail1) (BikeState pos2 o2 _ tail2) _) ->
                          [showPlayer' Color.red pos1 o1,
                           showLine Color.red tail1,
-                          showPlayer' Color.blue pos2 o2,
-                          showLine Color.blue tail2]
+                          showPlayer' Color.darkBlue pos2 o2,
+                          showLine Color.darkBlue tail2]
     in collage width height forms
 
 step : Input -> GameState -> GameState
