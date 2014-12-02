@@ -31,8 +31,8 @@ keybInput =
     let realInput = lift3 KeybInput (lift (\{x,y} -> (x,y)) Keyboard.wasd) (lift (\{x,y} -> (x,y)) Keyboard.arrows) Keyboard.space
     in lift (Debug.watch "keybInput") realInput
 
-timedInput : Signal Input
-timedInput = lift2 Input keybInput heartbeat
+input : Signal Input
+input = lift2 Input keybInput heartbeat
 
 initialGameState : GameState
 initialGameState =
@@ -46,7 +46,7 @@ showGameState : GameState -> Element
 showGameState gs = 
     let forms = [filled black (rect width height)] ++ elements
         elements = case gs of
-                     (Ended m _)-> [toForm (centered (Text.color white (toText m)))]
+                     (Ended m _)-> [toForm (centered (Text.color (rgb 0 204 0) (toText (m ++ "\n\nPress space to start"))))]
                      (Playing (BikeState pos1 o1 _ tail1) (BikeState pos2 o2 _ tail2) _) ->
                          [showPlayer' Color.red pos1 o1,
                           showLine Color.red tail1,
@@ -119,22 +119,30 @@ corners (x,y) o =
 outOfBounds : [Pos] -> Bool
 outOfBounds l = foldr (\(x,y) b -> b || ((abs x > width/2) || (abs y > height/2))) False l
 
-pointInBox : Float -> Float -> Float -> Float -> Pos -> Bool
-pointInBox x1 x2 y1 y2 (px, py) = (sign(x1-px) /= sign (x2-px)) && (sign(y1-py) /= sign(y2-py))
+pointInRectangle : Float -> Float -> Float -> Float -> Pos -> Bool
+pointInRectangle x1 x2 y1 y2 (px, py) = (sign(x1-px) /= sign (x2-px)) && (sign(y1-py) /= sign(y2-py))
 
 collideWithTail (x,y) o =
         let f = case o of
-            N -> pointInBox (x-playerH/2) (x+playerH/2) y (y+playerW)
-            E -> pointInBox x (x+playerW) (y-playerH/2) (y+playerH/2)
-            S -> pointInBox (x-playerH/2) (x+playerH/2) y (y-playerW)
-            W -> pointInBox x (x-playerW) (y-playerH/2) (y+playerH/2)
+            N -> pointInRectangle (x-playerH/2) (x+playerH/2) y (y+playerW)
+            E -> pointInRectangle x (x+playerW) (y-playerH/2) (y+playerH/2)
+            S -> pointInRectangle (x-playerH/2) (x+playerH/2) y (y-playerW)
+            W -> pointInRectangle x (x-playerW) (y-playerH/2) (y+playerH/2)
         in
             foldr (\p b -> b || f p) False
 
-gameState = lift (Debug.watch "Game state") (foldp step (Ended  "Press space to start playing" False) timedInput)
+gameState = lift (Debug.watch "Game state") (foldp step (Ended banner False) input)
 
 main = lift showGameState gameState
 
+banner = join "\n" banner'
+banner' = ["########_########___#######__##____##",
+           "___##____##_____##_##_____##_###___##",
+           "___##____##_____##_##_____##_####__##",
+           "___##____########__##_____##_##_##_##",
+           "___##____##___##___##_____##_##__####",
+           "___##____##____##__##_____##_##___###",
+           "___##____##_____##__#######__##____##"]
 
 data Orientation = N | E | S | W
 -- example use: showPlayer' Color.lightBlue (10, 10) N
