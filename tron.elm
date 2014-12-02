@@ -46,12 +46,12 @@ showGameState : GameState -> Element
 showGameState gs = 
     let forms = [filled black (rect width height)] ++ elements
         elements = case gs of
-                     (Ended m _)-> [toForm (centered (Text.color white (toText m)))]
+                     (Ended m _)-> [toForm (centered (Text.color (rgb 0 204 0) (toText (m ++ "\n\n\n========> Press space to start <========"))))]
                      (Playing (BikeState pos1 o1 _ tail1) (BikeState pos2 o2 _ tail2) _) ->
                          [showPlayer' Color.red pos1 o1,
                           showLine Color.red tail1,
-                          showPlayer' Color.blue pos2 o2,
-                          showLine Color.blue tail2]
+                          showPlayer' Color.darkBlue pos2 o2,
+                          showLine Color.darkBlue tail2]
     in collage width height forms
 
 step : Input -> GameState -> GameState
@@ -131,9 +131,18 @@ collideWithTail (x,y) o =
         in
             foldr (\p b -> b || f p) False
 
-gameState = lift (Debug.watch "Game state") (foldp step (Ended  "Press space to start playing" False) timedInput)
+gameState = lift (Debug.watch "Game state") (foldp step (Ended banner False) timedInput)
 
 main = lift showGameState gameState
+
+banner = join "\n" banner'
+banner' = ["########_########___#######__##____##",
+           "___##____##_____##_##_____##_###___##",
+           "___##____##_____##_##_____##_####__##",
+           "___##____########__##_____##_##_##_##",
+           "___##____##___##___##_____##_##__####",
+           "___##____##____##__##_____##_##___###",
+           "___##____##_____##__#######__##____##"]
 
 
 data Orientation = N | E | S | W

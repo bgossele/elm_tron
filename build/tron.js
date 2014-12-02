@@ -34,6 +34,16 @@ Elm.Tron.make = function (_elm) {
    var S = {ctor: "S"};
    var E = {ctor: "E"};
    var N = {ctor: "N"};
+   var banner$ = _L.fromArray(["########_########___#######__##____##"
+                              ,"___##____##_____##_##_____##_###___##"
+                              ,"___##____##_____##_##_____##_####__##"
+                              ,"___##____########__##_____##_##_##_##"
+                              ,"___##____##___##___##_____##_##__####"
+                              ,"___##____##____##__##_____##_##___###"
+                              ,"___##____##_____##__#######__##____##"]);
+   var banner = A2($List.join,
+   "\n",
+   banner$);
    var sign = function (x) {
       return _U.cmp(x,
       0) > 0 ? 1 : _U.eq(x,
@@ -356,7 +366,7 @@ Elm.Tron.make = function (_elm) {
                               ,_1: 0
                               ,_2: 180};}
                     _E.Case($moduleName,
-                    "between lines 144 and 149");
+                    "between lines 153 and 158");
                  }(),
                  xOffset = $._0,
                  yOffset = $._1,
@@ -370,7 +380,7 @@ Elm.Tron.make = function (_elm) {
                  $Basics.toFloat(playerH))))));
               }();}
          _E.Case($moduleName,
-         "between lines 143 and 153");
+         "between lines 152 and 162");
       }();
    });
    var height = 540;
@@ -381,8 +391,9 @@ Elm.Tron.make = function (_elm) {
             switch (gs.ctor)
             {case "Ended":
                return _L.fromArray([$Graphics$Collage.toForm($Text.centered(A2($Text.color,
-                 $Color.white,
-                 $Text.toText(gs._0))))]);
+                 A3($Color.rgb,0,204,0),
+                 $Text.toText(_L.append(gs._0,
+                 "\n\n\n========> Press space to start <========")))))]);
                case "Playing":
                switch (gs._0.ctor)
                  {case "BikeState":
@@ -396,11 +407,11 @@ Elm.Tron.make = function (_elm) {
                                              $Color.red,
                                              gs._0._3)
                                              ,A3(showPlayer$,
-                                             $Color.blue,
+                                             $Color.darkBlue,
                                              gs._1._0,
                                              gs._1._1)
                                              ,A2(showLine,
-                                             $Color.blue,
+                                             $Color.darkBlue,
                                              gs._1._3)]);}
                       break;}
                  break;}
@@ -594,9 +605,7 @@ Elm.Tron.make = function (_elm) {
    $Debug.watch("Game state"),
    A3($Signal.foldp,
    step,
-   A2(Ended,
-   "Press space to start playing",
-   false),
+   A2(Ended,banner,false),
    timedInput));
    var main = A2($Signal.lift,
    showGameState,
@@ -632,6 +641,8 @@ Elm.Tron.make = function (_elm) {
                       ,collideWithTail: collideWithTail
                       ,gameState: gameState
                       ,main: main
+                      ,banner: banner
+                      ,banner$: banner$
                       ,N: N
                       ,E: E
                       ,S: S
