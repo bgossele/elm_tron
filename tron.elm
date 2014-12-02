@@ -46,7 +46,7 @@ showGameState : GameState -> Element
 showGameState gs = 
     let forms = [filled black (rect width height)] ++ elements
         elements = case gs of
-                     (Ended m _)-> [toForm (centered (Text.color (rgb 0 204 0) (toText (m ++ "\n\n\n========> Press space to start <========"))))]
+                     (Ended m _)-> [toForm (centered (Text.typeface ["arial"] (Text.color (rgb 0 204 0) (toText (m ++ "\n\n\n========> Press space to start <========")))))]
                      (Playing (BikeState pos1 o1 _ tail1) (BikeState pos2 o2 _ tail2) _) ->
                          [showPlayer' Color.red pos1 o1,
                           showLine Color.red tail1,
@@ -72,8 +72,8 @@ step (Input (KeybInput arrows wasd space) _) gs =
                 outOfBounds2 = outOfBounds (corners new_pos2 new_o2)
                 collision2 = (collideWithTail new_pos2 new_o2 new_tail1) || (collideWithTail new_pos2 new_o2 new_tail2)
             in
-                if outOfBounds1 || collision1 then Ended "Player 2 wins! \n Press space to restart" space else
-                    if outOfBounds2 || collision2 then Ended "Player 1 wins! \n Press space to restart" space else
+                if outOfBounds1 || collision1 then Ended "Player 2 wins!" space else
+                    if outOfBounds2 || collision2 then Ended "Player 1 wins!" space else
                         if space /= b && space then initialGameState else
                             Playing (BikeState new_pos1 new_o1 v1 new_tail1) (BikeState new_pos2 new_o2 v2 new_tail2) space
 

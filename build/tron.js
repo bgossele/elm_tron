@@ -390,10 +390,12 @@ Elm.Tron.make = function (_elm) {
          var elements = function () {
             switch (gs.ctor)
             {case "Ended":
-               return _L.fromArray([$Graphics$Collage.toForm($Text.centered(A2($Text.color,
+               return _L.fromArray([$Graphics$Collage.toForm($Text.centered(A2($Text.typeface,
+                 _L.fromArray(["arial"]),
+                 A2($Text.color,
                  A3($Color.rgb,0,204,0),
                  $Text.toText(_L.append(gs._0,
-                 "\n\n\n========> Press space to start <========")))))]);
+                 "\n\n\n========> Press space to start <========"))))))]);
                case "Playing":
                switch (gs._0.ctor)
                  {case "BikeState":
@@ -574,7 +576,7 @@ Elm.Tron.make = function (_elm) {
                                         new_o1,
                                         new_tail2);
                                         return outOfBounds1 || collision1 ? A2(Ended,
-                                        "Player 2 wins! \n Press space to restart",
+                                        "Player 2 wins!",
                                         _v73._0._2) : outOfBounds2 || collision2 ? A2(Ended,
                                         "Player 1 wins!",
                                         _v73._0._2) : !_U.eq(_v73._0._2,
