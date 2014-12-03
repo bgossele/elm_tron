@@ -46,7 +46,7 @@ showGameState : GameState -> Element
 showGameState gs = 
     let forms = [filled black (rect width height)] ++ elements
         elements = case gs of
-                     (Ended m _)-> [toForm (centered (Text.typeface ["arial"] (Text.color (rgb 0 204 0) (toText (m ++ "\n\n\n========> Press space to start <========")))))]
+                     (Ended m _)-> [toForm (centered (Text.typeface ["arial"] (Text.color yellow (toText (m ++ "\n\n\n========> Press space to start <========")))))]
                      (Playing (BikeState pos1 o1 _ tail1) (BikeState pos2 o2 _ tail2) _) ->
                          [showPlayer' Color.red pos1 o1,
                           showLine Color.red tail1,

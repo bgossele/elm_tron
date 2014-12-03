@@ -393,7 +393,7 @@ Elm.Tron.make = function (_elm) {
                return _L.fromArray([$Graphics$Collage.toForm($Text.centered(A2($Text.typeface,
                  _L.fromArray(["arial"]),
                  A2($Text.color,
-                 A3($Color.rgb,0,204,0),
+                 $Color.yellow,
                  $Text.toText(_L.append(gs._0,
                  "\n\n\n========> Press space to start <========"))))))]);
                case "Playing":
