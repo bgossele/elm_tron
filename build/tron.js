@@ -20,7 +20,8 @@ Elm.Tron.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Text = Elm.Text.make(_elm),
-   $Time = Elm.Time.make(_elm);
+   $Time = Elm.Time.make(_elm),
+   $Window = Elm.Window.make(_elm);
    var tailWidth = 2;
    var showLine = F2(function (color,
    positions) {
@@ -44,69 +45,92 @@ Elm.Tron.make = function (_elm) {
    var banner = A2($List.join,
    "\n",
    banner$);
+   var outOfBounds = F2(function (l,
+   _v0) {
+      return function () {
+         switch (_v0.ctor)
+         {case "_Tuple2":
+            return A3($List.foldr,
+              F2(function (_v4,b) {
+                 return function () {
+                    switch (_v4.ctor)
+                    {case "_Tuple2":
+                       return b || (_U.cmp($Basics.abs(_v4._0),
+                         $Basics.toFloat(_v0._0) / 2) > 0 || _U.cmp($Basics.abs(_v4._1),
+                         $Basics.toFloat(_v0._1) / 2) > 0);}
+                    _E.Case($moduleName,
+                    "on line 125, column 43 to 98");
+                 }();
+              }),
+              false,
+              l);}
+         _E.Case($moduleName,
+         "on line 125, column 24 to 109");
+      }();
+   });
    var sign = function (x) {
       return _U.cmp(x,
       0) > 0 ? 1 : _U.eq(x,
       0) ? 0 : -1;
    };
-   var findPoint = F3(function (_v0,
-   _v1,
+   var findPoint = F3(function (_v8,
+   _v9,
    dist) {
       return function () {
-         switch (_v1.ctor)
+         switch (_v9.ctor)
          {case "_Tuple2":
             return function () {
-                 switch (_v0.ctor)
+                 switch (_v8.ctor)
                  {case "_Tuple2":
                     return {ctor: "_Tuple2"
-                           ,_0: _v0._0 + sign(_v1._0 - _v0._0) * dist
-                           ,_1: _v0._1 + sign(_v1._1 - _v0._1) * dist};}
+                           ,_0: _v8._0 + sign(_v9._0 - _v8._0) * dist
+                           ,_1: _v8._1 + sign(_v9._1 - _v8._1) * dist};}
                  _E.Case($moduleName,
-                 "on line 105, column 37 to 87");
+                 "on line 110, column 37 to 87");
               }();}
          _E.Case($moduleName,
-         "on line 105, column 37 to 87");
+         "on line 110, column 37 to 87");
       }();
    });
-   var pointInBox = F5(function (x1,
+   var pointInRectangle = F5(function (x1,
    x2,
    y1,
    y2,
-   _v8) {
+   _v16) {
       return function () {
-         switch (_v8.ctor)
+         switch (_v16.ctor)
          {case "_Tuple2":
-            return !_U.eq(sign(x1 - _v8._0),
-              sign(x2 - _v8._0)) && !_U.eq(sign(y1 - _v8._1),
-              sign(y2 - _v8._1));}
+            return !_U.eq(sign(x1 - _v16._0),
+              sign(x2 - _v16._0)) && !_U.eq(sign(y1 - _v16._1),
+              sign(y2 - _v16._1));}
          _E.Case($moduleName,
-         "on line 123, column 36 to 94");
+         "on line 128, column 42 to 100");
       }();
    });
    var sq = function (x) {
       return x * x;
    };
-   var dist = F2(function (_v12,
-   _v13) {
+   var dist = F2(function (_v20,
+   _v21) {
       return function () {
-         switch (_v13.ctor)
+         switch (_v21.ctor)
          {case "_Tuple2":
             return function () {
-                 switch (_v12.ctor)
+                 switch (_v20.ctor)
                  {case "_Tuple2":
-                    return $Basics.sqrt(sq(_v12._0 - _v13._0) + sq(_v12._1 - _v13._1));}
+                    return $Basics.sqrt(sq(_v20._0 - _v21._0) + sq(_v20._1 - _v21._1));}
                  _E.Case($moduleName,
-                 "on line 108, column 24 to 51");
+                 "on line 113, column 24 to 51");
               }();}
          _E.Case($moduleName,
-         "on line 108, column 24 to 51");
+         "on line 113, column 24 to 51");
       }();
    });
-   var generateTail = F3(function (_v20,
+   var generateTail = F3(function (_v28,
    points,
    length) {
       return function () {
-         switch (_v20.ctor)
+         switch (_v28.ctor)
          {case "_Tuple2":
             return _U.eq(length,
               0) ? _L.fromArray([]) : function () {
@@ -114,8 +138,8 @@ Elm.Tron.make = function (_elm) {
                  {case "::": return function () {
                          var d = A2(dist,
                          {ctor: "_Tuple2"
-                         ,_0: _v20._0
-                         ,_1: _v20._1},
+                         ,_0: _v28._0
+                         ,_1: _v28._1},
                          points._0);
                          return _U.cmp(d,
                          length) < 1 ? A2($List._op["::"],
@@ -125,72 +149,72 @@ Elm.Tron.make = function (_elm) {
                          points._1,
                          length - d)) : _L.fromArray([A3(findPoint,
                          {ctor: "_Tuple2"
-                         ,_0: _v20._0
-                         ,_1: _v20._1},
+                         ,_0: _v28._0
+                         ,_1: _v28._1},
                          points._0,
                          length)]);
                       }();
                     case "[]":
                     return _L.fromArray([]);}
                  _E.Case($moduleName,
-                 "between lines 94 and 99");
+                 "between lines 99 and 104");
               }();}
          _E.Case($moduleName,
-         "between lines 93 and 99");
+         "between lines 98 and 104");
       }();
    });
-   var pointInDirection = F3(function (_v27,
+   var pointInDirection = F3(function (_v35,
    o,
    distance) {
       return function () {
-         switch (_v27.ctor)
+         switch (_v35.ctor)
          {case "_Tuple2":
             return function () {
                  switch (o.ctor)
                  {case "E":
                     return {ctor: "_Tuple2"
-                           ,_0: _v27._0 + distance
-                           ,_1: _v27._1};
+                           ,_0: _v35._0 + distance
+                           ,_1: _v35._1};
                     case "N":
                     return {ctor: "_Tuple2"
-                           ,_0: _v27._0
-                           ,_1: _v27._1 + distance};
+                           ,_0: _v35._0
+                           ,_1: _v35._1 + distance};
                     case "S":
                     return {ctor: "_Tuple2"
-                           ,_0: _v27._0
-                           ,_1: _v27._1 - distance};
+                           ,_0: _v35._0
+                           ,_1: _v35._1 - distance};
                     case "W":
                     return {ctor: "_Tuple2"
-                           ,_0: _v27._0 - distance
-                           ,_1: _v27._1};}
+                           ,_0: _v35._0 - distance
+                           ,_1: _v35._1};}
                  _E.Case($moduleName,
-                 "between lines 85 and 89");
+                 "between lines 90 and 94");
               }();}
          _E.Case($moduleName,
-         "between lines 85 and 89");
+         "between lines 90 and 94");
       }();
    });
-   var getNewOrientation = F2(function (_v32,
+   var getNewOrientation = F2(function (_v40,
    o) {
       return function () {
-         switch (_v32.ctor)
+         switch (_v40.ctor)
          {case "_Tuple2":
-            return _U.eq(_v32._0,
-              1) ? E : _U.eq(_v32._0,
-              -1) ? W : _U.eq(_v32._1,
-              1) ? N : _U.eq(_v32._1,
+            return _U.eq(_v40._0,
+              1) ? E : _U.eq(_v40._0,
+              -1) ? W : _U.eq(_v40._1,
+              1) ? N : _U.eq(_v40._1,
               -1) ? S : o;}
          _E.Case($moduleName,
-         "on line 81, column 29 to 126");
+         "on line 86, column 29 to 126");
       }();
    });
-   var heartbeat = A2($Signal.lift,
-   $Debug.watch("heartbeat"),
-   $Time.fps(100.0));
-   var Input = F2(function (a,b) {
+   var Input = F3(function (a,
+   b,
+   c) {
       return {ctor: "Input"
              ,_0: a
-             ,_1: b};
+             ,_1: b
+             ,_2: c};
    });
    var KeybInput = F3(function (a,
    b,
@@ -204,20 +228,20 @@ Elm.Tron.make = function (_elm) {
       var realInput = A4($Signal.lift3,
       KeybInput,
       A2($Signal.lift,
-      function (_v36) {
+      function (_v44) {
          return function () {
             return {ctor: "_Tuple2"
-                   ,_0: _v36.x
-                   ,_1: _v36.y};
+                   ,_0: _v44.x
+                   ,_1: _v44.y};
          }();
       },
       $Keyboard.wasd),
       A2($Signal.lift,
-      function (_v38) {
+      function (_v46) {
          return function () {
             return {ctor: "_Tuple2"
-                   ,_0: _v38.x
-                   ,_1: _v38.y};
+                   ,_0: _v46.x
+                   ,_1: _v46.y};
          }();
       },
       $Keyboard.arrows),
@@ -226,24 +250,28 @@ Elm.Tron.make = function (_elm) {
       $Debug.watch("keybInput"),
       realInput);
    }();
-   var timedInput = A3($Signal.lift2,
+   var tailOffset = $Basics.toFloat(4);
+   var tailL = $Basics.toFloat(256);
+   var frameRate = 80;
+   var tailIncrement = 5 / frameRate;
+   var heartbeat = $Time.fps(frameRate);
+   var input = A4($Signal.lift3,
    Input,
    keybInput,
-   heartbeat);
-   var tailOffset = $Basics.toFloat(4);
-   var tailL = $Basics.toFloat(200);
+   heartbeat,
+   $Window.dimensions);
    var playerH = 16;
    var playerW = 64;
-   var corners = F2(function (_v40,
+   var corners = F2(function (_v48,
    o) {
       return function () {
-         switch (_v40.ctor)
+         switch (_v48.ctor)
          {case "_Tuple2":
             return function () {
                  var $ = A3(pointInDirection,
                  {ctor: "_Tuple2"
-                 ,_0: _v40._0
-                 ,_1: _v40._1},
+                 ,_0: _v48._0
+                 ,_1: _v48._1},
                  o,
                  playerW),
                  xt = $._0,
@@ -252,78 +280,82 @@ Elm.Tron.make = function (_elm) {
                     switch (o.ctor)
                     {case "E":
                        return _L.fromArray([{ctor: "_Tuple2"
-                                            ,_0: _v40._0
-                                            ,_1: _v40._1 + playerH / 2}
+                                            ,_0: _v48._0
+                                            ,_1: _v48._1 + playerH / 2}
                                            ,{ctor: "_Tuple2"
-                                            ,_0: _v40._0
-                                            ,_1: _v40._1 - playerH / 2}
-                                           ,{ctor: "_Tuple2"
-                                            ,_0: xt
-                                            ,_1: _v40._1 + playerH / 2}
+                                            ,_0: _v48._0
+                                            ,_1: _v48._1 - playerH / 2}
                                            ,{ctor: "_Tuple2"
                                             ,_0: xt
-                                            ,_1: _v40._1 - playerH / 2}]);
+                                            ,_1: _v48._1 + playerH / 2}
+                                           ,{ctor: "_Tuple2"
+                                            ,_0: xt
+                                            ,_1: _v48._1 - playerH / 2}]);
                        case "W":
                        return _L.fromArray([{ctor: "_Tuple2"
-                                            ,_0: _v40._0
-                                            ,_1: _v40._1 + playerH / 2}
+                                            ,_0: _v48._0
+                                            ,_1: _v48._1 + playerH / 2}
                                            ,{ctor: "_Tuple2"
-                                            ,_0: _v40._0
-                                            ,_1: _v40._1 - playerH / 2}
-                                           ,{ctor: "_Tuple2"
-                                            ,_0: xt
-                                            ,_1: _v40._1 + playerH / 2}
+                                            ,_0: _v48._0
+                                            ,_1: _v48._1 - playerH / 2}
                                            ,{ctor: "_Tuple2"
                                             ,_0: xt
-                                            ,_1: _v40._1 - playerH / 2}]);}
+                                            ,_1: _v48._1 + playerH / 2}
+                                           ,{ctor: "_Tuple2"
+                                            ,_0: xt
+                                            ,_1: _v48._1 - playerH / 2}]);}
                     return _L.fromArray([{ctor: "_Tuple2"
-                                         ,_0: _v40._0 + playerH / 2
-                                         ,_1: _v40._1}
+                                         ,_0: _v48._0 + playerH / 2
+                                         ,_1: _v48._1}
                                         ,{ctor: "_Tuple2"
-                                         ,_0: _v40._0 - playerH / 2
-                                         ,_1: _v40._1}
+                                         ,_0: _v48._0 - playerH / 2
+                                         ,_1: _v48._1}
                                         ,{ctor: "_Tuple2"
-                                         ,_0: _v40._0 + playerH / 2
+                                         ,_0: _v48._0 + playerH / 2
                                          ,_1: yt}
                                         ,{ctor: "_Tuple2"
-                                         ,_0: _v40._0 - playerH / 2
+                                         ,_0: _v48._0 - playerH / 2
                                          ,_1: yt}]);
                  }();
               }();}
          _E.Case($moduleName,
-         "between lines 112 and 117");
+         "between lines 117 and 122");
       }();
    });
-   var collideWithTail = F2(function (_v45,
+   var collideWithTail = F2(function (_v53,
    o) {
       return function () {
-         switch (_v45.ctor)
+         switch (_v53.ctor)
          {case "_Tuple2":
             return function () {
                  var f = function () {
                     switch (o.ctor)
-                    {case "E": return A4(pointInBox,
-                         _v45._0,
-                         _v45._0 + playerW,
-                         _v45._1 - playerH / 2,
-                         _v45._1 + playerH / 2);
-                       case "N": return A4(pointInBox,
-                         _v45._0 - playerH / 2,
-                         _v45._0 + playerH / 2,
-                         _v45._1,
-                         _v45._1 + playerW);
-                       case "S": return A4(pointInBox,
-                         _v45._0 - playerH / 2,
-                         _v45._0 + playerH / 2,
-                         _v45._1,
-                         _v45._1 - playerW);
-                       case "W": return A4(pointInBox,
-                         _v45._0,
-                         _v45._0 - playerW,
-                         _v45._1 - playerH / 2,
-                         _v45._1 + playerH / 2);}
+                    {case "E":
+                       return A4(pointInRectangle,
+                         _v53._0,
+                         _v53._0 + playerW,
+                         _v53._1 - playerH / 2,
+                         _v53._1 + playerH / 2);
+                       case "N":
+                       return A4(pointInRectangle,
+                         _v53._0 - playerH / 2,
+                         _v53._0 + playerH / 2,
+                         _v53._1,
+                         _v53._1 + playerW);
+                       case "S":
+                       return A4(pointInRectangle,
+                         _v53._0 - playerH / 2,
+                         _v53._0 + playerH / 2,
+                         _v53._1,
+                         _v53._1 - playerW);
+                       case "W":
+                       return A4(pointInRectangle,
+                         _v53._0,
+                         _v53._0 - playerW,
+                         _v53._1 - playerH / 2,
+                         _v53._1 + playerH / 2);}
                     _E.Case($moduleName,
-                    "between lines 126 and 131");
+                    "between lines 131 and 136");
                  }();
                  return A2($List.foldr,
                  F2(function (p,b) {
@@ -332,14 +364,14 @@ Elm.Tron.make = function (_elm) {
                  false);
               }();}
          _E.Case($moduleName,
-         "between lines 126 and 132");
+         "between lines 131 and 137");
       }();
    });
    var showPlayer$ = F3(function (color,
-   _v50,
+   _v58,
    o) {
       return function () {
-         switch (_v50.ctor)
+         switch (_v58.ctor)
          {case "_Tuple2":
             return function () {
                  var fw = $Basics.toFloat(playerW);
@@ -366,7 +398,7 @@ Elm.Tron.make = function (_elm) {
                               ,_1: 0
                               ,_2: 180};}
                     _E.Case($moduleName,
-                    "between lines 153 and 158");
+                    "between lines 159 and 164");
                  }(),
                  xOffset = $._0,
                  yOffset = $._1,
@@ -374,19 +406,19 @@ Elm.Tron.make = function (_elm) {
                  return $Graphics$Collage.rotate($Basics.degrees(degs))($Graphics$Collage.move({ctor: "_Tuple2"
                                                                                                ,_0: xOffset
                                                                                                ,_1: yOffset})($Graphics$Collage.move({ctor: "_Tuple2"
-                                                                                                                                     ,_0: _v50._0
-                                                                                                                                     ,_1: _v50._1})($Graphics$Collage.outlined($Graphics$Collage.solid(color))(A2($Graphics$Collage.rect,
+                                                                                                                                     ,_0: _v58._0
+                                                                                                                                     ,_1: _v58._1})($Graphics$Collage.outlined($Graphics$Collage.solid(color))(A2($Graphics$Collage.rect,
                  fw,
                  $Basics.toFloat(playerH))))));
               }();}
          _E.Case($moduleName,
-         "between lines 152 and 162");
+         "between lines 158 and 168");
       }();
    });
-   var height = 540;
-   var width = 720;
-   var showGameState = function (gs) {
+   var showGameState = F2(function (gs,
+   _v63) {
       return function () {
+<<<<<<< HEAD
          var elements = function () {
             switch (gs.ctor)
             {case "Ended":
@@ -430,33 +462,69 @@ Elm.Tron.make = function (_elm) {
          width,
          height,
          forms);
+=======
+         switch (_v63.ctor)
+         {case "_Tuple2":
+            return function () {
+                 var elements = function () {
+                    switch (gs.ctor)
+                    {case "Ended":
+                       return _L.fromArray([$Graphics$Collage.toForm($Text.centered(A2($Text.color,
+                         $Color.yellow,
+                         $Text.toText(_L.append(gs._0,
+                         "\n\n\n========> Press space to start <========")))))]);
+                       case "Playing":
+                       switch (gs._0.ctor)
+                         {case "BikeState":
+                            switch (gs._1.ctor)
+                              {case "BikeState":
+                                 return _L.fromArray([A3(showPlayer$,
+                                                     $Color.red,
+                                                     gs._0._0,
+                                                     gs._0._1)
+                                                     ,A2(showLine,
+                                                     $Color.red,
+                                                     gs._0._4)
+                                                     ,A3(showPlayer$,
+                                                     $Color.darkBlue,
+                                                     gs._1._0,
+                                                     gs._1._1)
+                                                     ,A2(showLine,
+                                                     $Color.darkBlue,
+                                                     gs._1._4)]);}
+                              break;}
+                         break;}
+                    _E.Case($moduleName,
+                    "between lines 51 and 58");
+                 }();
+                 return A3($Graphics$Collage.collage,
+                 _v63._0,
+                 _v63._1,
+                 _L.append(_L.fromArray([A2($Graphics$Collage.filled,
+                 $Color.black,
+                 A2($Graphics$Collage.rect,
+                 $Basics.toFloat(_v63._0),
+                 $Basics.toFloat(_v63._1)))]),
+                 elements));
+              }();}
+         _E.Case($moduleName,
+         "between lines 51 and 58");
+>>>>>>> fullscreen
       }();
-   };
-   var outOfBounds = function (l) {
-      return A3($List.foldr,
-      F2(function (_v69,b) {
-         return function () {
-            switch (_v69.ctor)
-            {case "_Tuple2":
-               return b || (_U.cmp($Basics.abs(_v69._0),
-                 width / 2) > 0 || _U.cmp($Basics.abs(_v69._1),
-                 height / 2) > 0);}
-            _E.Case($moduleName,
-            "on line 120, column 36 to 80");
-         }();
-      }),
-      false,
-      l);
-   };
-   var BikeState = F4(function (a,
+   });
+   var defHeight = 768;
+   var defWidth = 1024;
+   var BikeState = F5(function (a,
    b,
    c,
-   d) {
+   d,
+   e) {
       return {ctor: "BikeState"
              ,_0: a
              ,_1: b
              ,_2: c
-             ,_3: d};
+             ,_3: d
+             ,_4: e};
    });
    var Playing = F3(function (a,
    b,
@@ -466,61 +534,73 @@ Elm.Tron.make = function (_elm) {
              ,_1: b
              ,_2: c};
    });
-   var initialGameState = function () {
-      var pos2 = {ctor: "_Tuple2"
-                 ,_0: width / 2 - 50
-                 ,_1: 0.0};
-      var bike2 = A4(BikeState,
-      pos2,
-      W,
-      0.75,
-      _L.fromArray([A3(pointInDirection,
-      pos2,
-      W,
-      0 - tailOffset)]));
-      var pos1 = {ctor: "_Tuple2"
-                 ,_0: (0 - width) / 2 + 50
-                 ,_1: 0.0};
-      var bike1 = A4(BikeState,
-      pos1,
-      E,
-      0.75,
-      _L.fromArray([A3(pointInDirection,
-      pos1,
-      E,
-      0 - tailOffset)]));
-      return A3(Playing,
-      bike1,
-      bike2,
-      true);
-   }();
+   var initialGameState = function (_v83) {
+      return function () {
+         switch (_v83.ctor)
+         {case "_Tuple2":
+            return function () {
+                 var pos2 = {ctor: "_Tuple2"
+                            ,_0: $Basics.toFloat(_v83._0) / 2 - 50
+                            ,_1: 0.0};
+                 var bike2 = A5(BikeState,
+                 pos2,
+                 W,
+                 1,
+                 tailL,
+                 _L.fromArray([A3(pointInDirection,
+                 pos2,
+                 W,
+                 0 - tailOffset)]));
+                 var pos1 = {ctor: "_Tuple2"
+                            ,_0: $Basics.toFloat(0 - _v83._0) / 2 + 50
+                            ,_1: 0.0};
+                 var bike1 = A5(BikeState,
+                 pos1,
+                 E,
+                 1,
+                 tailL,
+                 _L.fromArray([A3(pointInDirection,
+                 pos1,
+                 E,
+                 0 - tailOffset)]));
+                 return A3(Playing,
+                 bike1,
+                 bike2,
+                 true);
+              }();}
+         _E.Case($moduleName,
+         "between lines 43 and 47");
+      }();
+   };
    var Ended = F2(function (a,b) {
       return {ctor: "Ended"
              ,_0: a
              ,_1: b};
    });
-   var step = F2(function (_v73,
+   var step = F2(function (_v87,
    gs) {
       return function () {
-         switch (_v73.ctor)
+         switch (_v87.ctor)
          {case "Input":
-            switch (_v73._0.ctor)
+            switch (_v87._0.ctor)
               {case "KeybInput":
                  return function () {
                       switch (gs.ctor)
                       {case "Ended":
-                         return !_U.eq(_v73._0._2,
-                           gs._1) && _v73._0._2 ? initialGameState : A2(Ended,
+                         return !_U.eq(_v87._0._2,
+                           gs._1) && _v87._0._2 ? initialGameState(_v87._2) : A2(Ended,
                            gs._0,
-                           _v73._0._2);
+                           _v87._0._2);
                          case "Playing":
                          switch (gs._0.ctor)
                            {case "BikeState":
                               switch (gs._1.ctor)
                                 {case "BikeState":
                                    return function () {
+                                        var new_tailL2 = gs._1._3;
+                                        var new_tailL1 = gs._0._3;
                                         var new_o2 = A2(getNewOrientation,
-                                        _v73._0._1,
+                                        _v87._0._1,
                                         gs._1._1);
                                         var new_pos2 = A3(pointInDirection,
                                         gs._1._0,
@@ -535,13 +615,13 @@ Elm.Tron.make = function (_elm) {
                                         tailstart2,
                                         A3(generateTail,
                                         tailstart2,
-                                        gs._1._3,
-                                        tailL));
-                                        var outOfBounds2 = outOfBounds(A2(corners,
-                                        new_pos2,
-                                        new_o2));
+                                        gs._1._4,
+                                        gs._1._3));
+                                        var outOfBounds2 = A2(outOfBounds,
+                                        A2(corners,new_pos2,new_o2),
+                                        _v87._2);
                                         var new_o1 = A2(getNewOrientation,
-                                        _v73._0._0,
+                                        _v87._0._0,
                                         gs._0._1);
                                         var new_pos1 = A3(pointInDirection,
                                         gs._0._0,
@@ -556,8 +636,8 @@ Elm.Tron.make = function (_elm) {
                                         tailstart1,
                                         A3(generateTail,
                                         tailstart1,
-                                        gs._0._3,
-                                        tailL));
+                                        gs._0._4,
+                                        gs._0._3));
                                         var collision2 = A3(collideWithTail,
                                         new_pos2,
                                         new_o2,
@@ -565,9 +645,9 @@ Elm.Tron.make = function (_elm) {
                                         new_pos2,
                                         new_o2,
                                         new_tail2);
-                                        var outOfBounds1 = outOfBounds(A2(corners,
-                                        new_pos1,
-                                        new_o1));
+                                        var outOfBounds1 = A2(outOfBounds,
+                                        A2(corners,new_pos1,new_o1),
+                                        _v87._2);
                                         var collision1 = A3(collideWithTail,
                                         new_pos1,
                                         new_o1,
@@ -577,56 +657,59 @@ Elm.Tron.make = function (_elm) {
                                         new_tail2);
                                         return outOfBounds1 || collision1 ? A2(Ended,
                                         "Player 2 wins!",
-                                        _v73._0._2) : outOfBounds2 || collision2 ? A2(Ended,
+                                        _v87._0._2) : outOfBounds2 || collision2 ? A2(Ended,
                                         "Player 1 wins!",
-                                        _v73._0._2) : !_U.eq(_v73._0._2,
-                                        gs._2) && _v73._0._2 ? initialGameState : A3(Playing,
-                                        A4(BikeState,
+                                        _v87._0._2) : !_U.eq(_v87._0._2,
+                                        gs._2) && _v87._0._2 ? initialGameState(_v87._2) : A3(Playing,
+                                        A5(BikeState,
                                         new_pos1,
                                         new_o1,
                                         gs._0._2,
+                                        new_tailL1,
                                         new_tail1),
-                                        A4(BikeState,
+                                        A5(BikeState,
                                         new_pos2,
                                         new_o2,
                                         gs._1._2,
+                                        new_tailL2,
                                         new_tail2),
-                                        _v73._0._2);
+                                        _v87._0._2);
                                      }();}
                                 break;}
                            break;}
                       _E.Case($moduleName,
-                      "between lines 59 and 78");
+                      "between lines 62 and 83");
                    }();}
               break;}
          _E.Case($moduleName,
-         "between lines 59 and 78");
+         "between lines 62 and 83");
       }();
    });
-   var gameState = A2($Signal.lift,
-   $Debug.watch("Game state"),
-   A3($Signal.foldp,
+   var gameState = A3($Signal.foldp,
    step,
    A2(Ended,banner,false),
-   timedInput));
-   var main = A2($Signal.lift,
+   input);
+   var main = A3($Signal.lift2,
    showGameState,
-   gameState);
+   gameState,
+   $Window.dimensions);
    _elm.Tron.values = {_op: _op
                       ,Ended: Ended
                       ,Playing: Playing
                       ,BikeState: BikeState
-                      ,width: width
-                      ,height: height
+                      ,defWidth: defWidth
+                      ,defHeight: defHeight
                       ,playerW: playerW
                       ,playerH: playerH
+                      ,frameRate: frameRate
+                      ,tailIncrement: tailIncrement
                       ,tailL: tailL
                       ,tailOffset: tailOffset
                       ,KeybInput: KeybInput
                       ,Input: Input
                       ,heartbeat: heartbeat
                       ,keybInput: keybInput
-                      ,timedInput: timedInput
+                      ,input: input
                       ,initialGameState: initialGameState
                       ,showGameState: showGameState
                       ,step: step
@@ -639,7 +722,7 @@ Elm.Tron.make = function (_elm) {
                       ,dist: dist
                       ,corners: corners
                       ,outOfBounds: outOfBounds
-                      ,pointInBox: pointInBox
+                      ,pointInRectangle: pointInRectangle
                       ,collideWithTail: collideWithTail
                       ,gameState: gameState
                       ,main: main
