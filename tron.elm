@@ -5,28 +5,30 @@ import Text
 import Keyboard
 import Debug
 import Basics
+import Window
 
 type Pos = (Float, Float)
 type Tail = [Pos]
+type Window = (Int, Int)
 
 data GameState = Ended String Bool | Playing BikeState BikeState Bool
 data BikeState = BikeState Pos Orientation Float Float Tail
 
 -- default values
-width = 800
-height = 600
+defWidth = 1024
+defHeight = 768
 
 playerW = 64
 playerH = 16
-frameRate = 100
-tailIncrement = 1/frameRate
+frameRate = 80
+tailIncrement = 5/frameRate
 tailL = toFloat 256
 tailOffset = toFloat 4
 
 data KeybInput = KeybInput (Int, Int) (Int, Int) Bool
-data Input = Input KeybInput Time
+data Input = Input KeybInput Time Window
 
-heartbeat = lift (Debug.watch "heartbeat") (fps frameRate)
+heartbeat = fps frameRate
 
 keybInput : Signal KeybInput
 keybInput =
@@ -34,32 +36,31 @@ keybInput =
     in lift (Debug.watch "keybInput") realInput
 
 input : Signal Input
-input = lift2 Input keybInput heartbeat
+input = lift3 Input keybInput heartbeat Window.dimensions
 
-initialGameState : GameState
-initialGameState =
-    let pos1 = (-width/2+50, 0.0)
-        pos2 = (width/2-50, 0.0)
-        bike1 = BikeState pos1 E 0.75 tailL [pointInDirection pos1 E -tailOffset]
-        bike2 = BikeState pos2 W 0.75 tailL [pointInDirection pos2 W -tailOffset]
+initialGameState : Window -> GameState
+initialGameState (w,h) =
+    let pos1 = (toFloat(-w)/2+50, 0.0)
+        pos2 = (toFloat(w)/2-50, 0.0)
+        bike1 = BikeState pos1 E 1 tailL [pointInDirection pos1 E -tailOffset]
+        bike2 = BikeState pos2 W 1 tailL [pointInDirection pos2 W -tailOffset]
     in Playing bike1 bike2 True
 
-showGameState : GameState -> Element
-showGameState gs = 
-    let forms = [filled black (rect width height)] ++ elements
-        elements = case gs of
-                     (Ended m _)-> [toForm (centered (Text.color (rgb 0 204 0) (toText (m ++ "\n\n\n========> Press space to start <========"))))]
-                     (Playing (BikeState pos1 o1 _ _ tail1) (BikeState pos2 o2 _ _ tail2) _) ->
-                         [showPlayer' Color.red pos1 o1,
-                          showLine Color.red tail1,
-                          showPlayer' Color.darkBlue pos2 o2,
-                          showLine Color.darkBlue tail2]
-    in collage width height forms
+showGameState : GameState -> Window -> Element
+showGameState gs (width, height) = 
+    let elements = case gs of
+        (Ended m _)-> [toForm (centered (Text.color yellow (toText (m ++ "\n\n\n========> Press space to start <========"))))]
+        (Playing (BikeState pos1 o1 _ _ tail1) (BikeState pos2 o2 _ _ tail2) _) ->
+            [showPlayer' Color.red pos1 o1,
+             showLine Color.red tail1,
+             showPlayer' Color.darkBlue pos2 o2,
+             showLine Color.darkBlue tail2]
+    in collage width height ([filled black (rect (toFloat width) (toFloat height))] ++ elements)
 
 step : Input -> GameState -> GameState
-step (Input (KeybInput arrows wasd space) _) gs =
+step (Input (KeybInput arrows wasd space) _ window) gs =
     case gs of
-        Ended m b -> if space /= b && space then initialGameState else Ended m space
+        Ended m b -> if space /= b && space then initialGameState window else Ended m space
         Playing (BikeState pos1 o1 v1 tailL1 tail1) (BikeState pos2 o2 v2 tailL2 tail2) b -> 
             let new_o1 = getNewOrientation arrows o1
                 new_o2 = getNewOrientation wasd o2
@@ -71,14 +72,14 @@ step (Input (KeybInput arrows wasd space) _) gs =
                 new_tail2 = tailstart2 :: (generateTail tailstart2 tail2 tailL2)
                 new_tailL1 = Debug.watch "tailL" (tailL1 + tailIncrement)
                 new_tailL2 = tailL2 + tailIncrement
-                outOfBounds1 = outOfBounds (corners new_pos1 new_o1)
+                outOfBounds1 = outOfBounds (corners new_pos1 new_o1) window
                 collision1 = (collideWithTail new_pos1 new_o1 new_tail1) || (collideWithTail new_pos1 new_o1 new_tail2)
-                outOfBounds2 = outOfBounds (corners new_pos2 new_o2)
+                outOfBounds2 = outOfBounds (corners new_pos2 new_o2) window
                 collision2 = (collideWithTail new_pos2 new_o2 new_tail1) || (collideWithTail new_pos2 new_o2 new_tail2)
             in
                 if outOfBounds1 || collision1 then Ended "Player 2 wins!" space else
                     if outOfBounds2 || collision2 then Ended "Player 1 wins!" space else
-                        if space /= b && space then initialGameState else
+                        if space /= b && space then initialGameState window else
                             Playing (BikeState new_pos1 new_o1 v1 new_tailL1 new_tail1) (BikeState new_pos2 new_o2 v2 new_tailL2 new_tail2) space
 
 getNewOrientation : (Int,Int) -> Orientation -> Orientation
@@ -120,8 +121,8 @@ corners (x,y) o =
             W -> [(x,y+playerH/2),(x,y-playerH/2),(xt,y+playerH/2),(xt,y-playerH/2)]
             _ -> [(x+playerH/2,y),(x-playerH/2,y),(x+playerH/2,yt),(x-playerH/2,yt)]
 
-outOfBounds : [Pos] -> Bool
-outOfBounds l = foldr (\(x,y) b -> b || ((abs x > width/2) || (abs y > height/2))) False l
+outOfBounds : [Pos] -> Window -> Bool
+outOfBounds l (w, h) = foldr (\(x,y) b -> b || ((abs x > (toFloat w)/2) || (abs y > (toFloat h)/2))) False l
 
 pointInRectangle : Float -> Float -> Float -> Float -> Pos -> Bool
 pointInRectangle x1 x2 y1 y2 (px, py) = (sign(x1-px) /= sign (x2-px)) && (sign(y1-py) /= sign(y2-py))
@@ -139,7 +140,7 @@ collideWithTail (x,y) o =
 gameState = foldp step (Ended banner False) input
 
 
-main = lift showGameState gameState
+main = lift2 showGameState gameState Window.dimensions
 
 banner = join "\n" banner'
 banner' = ["########_########___#######__##____##",
