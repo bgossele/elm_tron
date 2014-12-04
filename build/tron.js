@@ -418,51 +418,6 @@ Elm.Tron.make = function (_elm) {
    var showGameState = F2(function (gs,
    _v63) {
       return function () {
-<<<<<<< HEAD
-         var elements = function () {
-            switch (gs.ctor)
-            {case "Ended":
-               return _L.fromArray([$Graphics$Collage.toForm($Text.centered(A2($Text.typeface,
-                 _L.fromArray(["arial"]),
-                 A2($Text.color,
-                 $Color.yellow,
-                 $Text.toText(_L.append(gs._0,
-                 "\n\n\n========> Press space to start <========"))))))]);
-               case "Playing":
-               switch (gs._0.ctor)
-                 {case "BikeState":
-                    switch (gs._1.ctor)
-                      {case "BikeState":
-                         return _L.fromArray([A3(showPlayer$,
-                                             $Color.red,
-                                             gs._0._0,
-                                             gs._0._1)
-                                             ,A2(showLine,
-                                             $Color.red,
-                                             gs._0._3)
-                                             ,A3(showPlayer$,
-                                             $Color.darkBlue,
-                                             gs._1._0,
-                                             gs._1._1)
-                                             ,A2(showLine,
-                                             $Color.darkBlue,
-                                             gs._1._3)]);}
-                      break;}
-                 break;}
-            _E.Case($moduleName,
-            "between lines 48 and 55");
-         }();
-         var forms = _L.append(_L.fromArray([A2($Graphics$Collage.filled,
-         $Color.black,
-         A2($Graphics$Collage.rect,
-         width,
-         height))]),
-         elements);
-         return A3($Graphics$Collage.collage,
-         width,
-         height,
-         forms);
-=======
          switch (_v63.ctor)
          {case "_Tuple2":
             return function () {
@@ -509,7 +464,6 @@ Elm.Tron.make = function (_elm) {
               }();}
          _E.Case($moduleName,
          "between lines 51 and 58");
->>>>>>> fullscreen
       }();
    });
    var defHeight = 768;
