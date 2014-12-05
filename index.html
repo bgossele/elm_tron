@@ -1,19 +1,23 @@
-
 <!DOCTYPE html>
 <html>
 	<head><meta charset=UTF-8>
 		<title>Tron</title>
-		<script type=text/javascript src=build/elm-runtime.js></script>
-		<script type=text/javascript src=build/tron.js></script>
+		<style>
+			body {
+				background-color: black;							
+			}
+		</style>
+		<script type=text/javascript src="build/elm-runtime.js"></script>
+		<script type=text/javascript src="build/tron.js"></script>
+	
 	</head>
 	<body>
-		<div id="field" style="width:720px; height:540px;"></div>
+		<div id="field" style="width:1024px; height:650px; display: block; margin-left: auto; margin-right: auto;"></div>
 		<script type=text/javascript>
 			var fieldDiv = document.getElementById('field');			
 			Elm.embed(Elm.Tron, fieldDiv);
 		</script>
-		<br><font face = "arial"> <font color="red">Player 1</font> plays with the WASD-keys; <font color="blue">Player 2</font> with the arrow keys.<br>
-		Configurable controls and support for up to 4 players are on TODO-list.</font>
+		<!--br><font face = "arial"> <font color="red">Player 1</font> plays with the WASD-keys; <font color="blue">Player 2</font> with the arrow keys.<br>
+		Configurable controls and support for up to 4 players are on TODO-list.</font-->
 	</body>
 </html>
-
